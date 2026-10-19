@@ -8,9 +8,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# -----------------------------
-# 디자인 CSS
-# -----------------------------
+# =========================
+# 디자인: 쿨톤 블루 & 그레이
+# =========================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
@@ -54,6 +54,10 @@ h2, h3 {
     font-weight: 650;
 }
 
+p, label, li {
+    line-height: 1.7;
+}
+
 [data-testid="stSidebar"] {
     background: #EDF2F8;
     border-right: 1px solid var(--border);
@@ -80,10 +84,17 @@ h2, h3 {
     margin-bottom: 28px;
 }
 
+.hero .eyebrow {
+    color: #6687A9;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+}
+
 .hero h1 {
     color: #293F5B;
     font-size: 2.1rem;
-    margin-bottom: 12px;
+    margin: 10px 0 12px 0;
 }
 
 .hero p {
@@ -179,25 +190,39 @@ hr {
 """, unsafe_allow_html=True)
 
 
-# -----------------------------
+# =========================
 # 세션 상태 초기화
-# -----------------------------
-if "checked_items" not in st.session_state:
-    st.session_state.checked_items = []
-
+# =========================
 if "custom_links" not in st.session_state:
     st.session_state.custom_links = []
 
 
-# -----------------------------
-# 사이드바 메뉴
-# -----------------------------
+# =========================
+# 공통 함수
+# =========================
+def info_card(title, description, icon="📘"):
+    with st.container(border=True):
+        st.markdown(f"### {icon} {title}")
+        st.write(description)
+
+
+def link_card(title, description, url):
+    with st.container(border=True):
+        st.markdown(f"### {title}")
+        st.write(description)
+        st.link_button("바로가기 ↗", url, use_container_width=True)
+
+
+# =========================
+# 사이드바
+# =========================
 with st.sidebar:
     st.markdown("# 🎓 오성고 길잡이")
-    st.caption("천안오성고등학교 학교생활 안내")
+    st.caption("CHEONAN OHSEONG HIGH SCHOOL")
+    st.divider()
 
     page = st.radio(
-        "메뉴",
+        "메뉴 선택",
         [
             "🏠 홈",
             "📚 학교생활",
@@ -214,46 +239,30 @@ with st.sidebar:
     st.caption("처음 시작하는 학교생활,\n차근차근 알아봐요.")
 
 
-# -----------------------------
-# 공통 카드 함수
-# -----------------------------
-def info_card(title, description, icon="📘"):
-    with st.container(border=True):
-        st.markdown(f"### {icon} {title}")
-        st.write(description)
-
-
-def link_card(title, description, url):
-    with st.container(border=True):
-        st.markdown(f"### {title}")
-        st.write(description)
-        st.link_button("바로가기 ↗", url, use_container_width=True)
-
-
-# -----------------------------
+# =========================
 # 홈
-# -----------------------------
+# =========================
 if page == "🏠 홈":
     st.markdown("""
     <div class="hero">
-        <p>CHEONAN OHSEONG HIGH SCHOOL</p>
+        <div class="eyebrow">CHEONAN OHSEONG HIGH SCHOOL</div>
         <h1>새로운 학교생활의 시작</h1>
         <p>
-            천안오성고등학교에 처음 온 학생들을 위한 안내 페이지예요.<br>
-            학교생활에 필요한 정보와 유용한 사이트를 한곳에서 확인해 보세요.
+            천안오성고등학교에 처음 온 학생들을 위한 학교생활 길잡이입니다.<br>
+            필요한 정보와 유용한 사이트를 한곳에서 확인해 보세요.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     st.subheader("무엇이 궁금한가요?")
-    st.caption("필요한 메뉴를 선택해 학교생활 정보를 확인해 보세요.")
+    st.caption("아래에서 필요한 정보를 찾아보세요.")
 
     col1, col2 = st.columns(2)
 
     with col1:
         info_card(
             "학교생활",
-            "시간표와 급식 정보, 학교생활에 유용한 내용을 확인해요.",
+            "시간표와 급식 정보, 학교생활 기본 팁을 확인해요.",
             "📚"
         )
         info_card(
@@ -261,17 +270,27 @@ if page == "🏠 홈":
             "새로운 친구에게 자연스럽게 다가가는 방법을 알아봐요.",
             "🤝"
         )
+        info_card(
+            "준비물 체크리스트",
+            "등교 전에 준비물을 하나씩 확인해요.",
+            "✅"
+        )
 
     with col2:
         info_card(
             "학교 시설",
-            "교실과 주요 시설을 찾을 때 참고할 내용을 확인해요.",
+            "교실과 주요 시설을 이용할 때 참고할 내용을 확인해요.",
             "🏫"
         )
         info_card(
-            "준비물 체크리스트",
-            "학교에 가져갈 물건을 체크하며 준비해요.",
-            "✅"
+            "학교생활 팁",
+            "수행평가와 과제, 시간 관리를 위한 팁을 알아봐요.",
+            "📌"
+        )
+        info_card(
+            "유용한 링크",
+            "학교 홈페이지와 자주 쓰는 사이트를 모아 봐요.",
+            "🔗"
         )
 
     st.divider()
@@ -280,48 +299,48 @@ if page == "🏠 홈":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("**학교명**")
-        st.write("천안오성고등학교")
-
-        st.markdown("**주소**")
-        st.write("충청남도 천안시 서북구 과수원길 27")
+        with st.container(border=True):
+            st.markdown("**학교명**")
+            st.write("천안오성고등학교")
+            st.markdown("**주소**")
+            st.write("충청남도 천안시 서북구 과수원길 27")
 
     with col2:
-        st.markdown("**공식 홈페이지**")
-        st.link_button(
-            "학교 홈페이지 방문 ↗",
-            "http://ohsung.caehs.kr"
-        )
+        with st.container(border=True):
+            st.markdown("**공식 홈페이지**")
+            st.write("학교 공지와 공식 정보를 확인하세요.")
+            st.link_button(
+                "학교 홈페이지 방문 ↗",
+                "http://ohsung.caehs.kr",
+                use_container_width=True
+            )
 
-        st.markdown("**안내**")
-        st.write("학교의 최신 공지와 일정은 공식 홈페이지에서 확인하세요.")
 
-
-# -----------------------------
+# =========================
 # 학교생활
-# -----------------------------
+# =========================
 elif page == "📚 학교생활":
-    st.title("📚 학교생활")
-    st.write("학교생활에 필요한 정보를 빠르게 확인해 보세요.")
+    st.title("학교생활")
+    st.write("매일 필요한 학교 정보를 빠르게 찾아보세요.")
 
     st.info(
-        "시간표와 급식 정보는 외부 사이트로 연결돼요. "
-        "정보가 변경될 수 있으니 학교 공지도 함께 확인하세요."
+        "시간표와 급식 정보는 외부 사이트로 연결됩니다. "
+        "최신 정보는 학교 공지와 함께 확인하세요."
     )
 
     col1, col2 = st.columns(2)
 
     with col1:
         link_card(
-            "🗓️ 시간표 확인",
-            "수업 시간표를 확인할 수 있는 외부 사이트예요.",
+            "시간표 확인",
+            "수업 시간표를 확인할 수 있는 사이트입니다.",
             "https://www.classroutine.net/schools/N10/8140246"
         )
 
     with col2:
         link_card(
-            "🍱 급식 정보 확인",
-            "급식 메뉴를 확인할 수 있는 외부 사이트예요.",
+            "급식 정보 확인",
+            "급식 메뉴 관련 정보를 확인할 수 있습니다.",
             "https://school.weingchicken.com/schools/8584"
         )
 
@@ -329,29 +348,29 @@ elif page == "📚 학교생활":
 
     info_card(
         "시간표 미리 확인하기",
-        "다음 날 수업과 과목별 준비물을 전날 확인하면 편리해요.",
+        "다음 날 수업과 과목별 준비물을 전날 확인해요.",
         "🗓️"
     )
 
     info_card(
         "학교 공지 확인하기",
-        "수행평가, 행사, 제출 기한 등은 학교 공지를 통해 확인해요.",
+        "수행평가, 행사, 제출 기한을 놓치지 않도록 공지를 확인해요.",
         "📢"
     )
 
     info_card(
         "모르는 내용 질문하기",
-        "교과 선생님이나 담임 선생님에게 질문하면 정확한 정보를 얻을 수 있어요.",
+        "담임 선생님이나 교과 선생님에게 질문하면 정확한 정보를 얻을 수 있어요.",
         "💬"
     )
 
 
-# -----------------------------
+# =========================
 # 학교 시설
-# -----------------------------
+# =========================
 elif page == "🏫 학교 시설":
-    st.title("🏫 학교 시설 안내")
-    st.write("학교 시설의 위치를 알아두면 처음 학교에 왔을 때 도움이 돼요.")
+    st.title("학교 시설 안내")
+    st.write("주요 시설을 미리 알아두면 학교생활에 도움이 돼요.")
 
     info_card(
         "교실",
@@ -361,13 +380,13 @@ elif page == "🏫 학교 시설":
 
     info_card(
         "교무실",
-        "선생님께 질문하거나 학교생활에 관한 도움을 받을 때 방문할 수 있어요.",
+        "선생님께 질문하거나 학교생활에 관한 도움을 받을 수 있는 공간이에요.",
         "👩‍🏫"
     )
 
     info_card(
         "도서관",
-        "독서와 과제에 필요한 자료를 찾아볼 수 있는 공간이에요.",
+        "독서와 과제에 필요한 자료를 찾아볼 수 있어요.",
         "📖"
     )
 
@@ -382,12 +401,12 @@ elif page == "🏫 학교 시설":
     )
 
 
-# -----------------------------
+# =========================
 # 친구 사귀기
-# -----------------------------
+# =========================
 elif page == "🤝 친구 사귀기":
-    st.title("🤝 친구 사귀기")
-    st.write("처음에는 어색해도 작은 인사부터 시작하면 좋아요.")
+    st.title("친구 사귀기")
+    st.write("작은 인사부터 시작해도 충분해요.")
 
     info_card(
         "먼저 인사하기",
@@ -397,12 +416,12 @@ elif page == "🤝 친구 사귀기":
 
     info_card(
         "공통 관심사 찾기",
-        "좋아하는 과목, 취미, 음악 등 공통된 관심사로 이야기해 보세요.",
+        "좋아하는 과목이나 취미, 음악 등 공통된 관심사로 이야기해 보세요.",
         "🎧"
     )
 
     info_card(
-        "모르는 것 함께 물어보기",
+        "함께 질문하기",
         "교실 위치나 과제 내용을 함께 확인하면서 대화를 나눌 수 있어요.",
         "💬"
     )
@@ -419,16 +438,17 @@ elif page == "🤝 친구 사귀기":
     )
 
 
-# -----------------------------
+# =========================
 # 학교생활 팁
-# -----------------------------
+# =========================
 elif page == "📌 학교생활 팁":
-    st.title("📌 알아두면 좋은 학교생활 팁")
+    st.title("학교생활 팁")
+    st.write("알아두면 유용한 학교생활 관리 방법이에요.")
 
     with st.expander("📅 수행평가 관리하기"):
         st.write(
             "수행평가 날짜와 제출 기한을 달력이나 메모 앱에 기록해 두세요. "
-            "과목별로 정리하면 준비해야 할 일을 놓치지 않을 수 있어요."
+            "과목별로 정리하면 준비할 일을 놓치지 않을 수 있어요."
         )
 
     with st.expander("🎒 가방 미리 챙기기"):
@@ -436,7 +456,7 @@ elif page == "📌 학교생활 팁":
             "시간표를 확인한 뒤 교과서, 필기구, 과제물을 전날 준비해 두세요."
         )
 
-    with st.expander("🙋 학교에서 도움이 필요할 때"):
+    with st.expander("🙋 도움이 필요할 때"):
         st.write(
             "학교생활 중 불편하거나 어려운 일이 있다면 "
             "담임 선생님이나 믿을 수 있는 교직원에게 도움을 요청하세요."
@@ -444,8 +464,7 @@ elif page == "📌 학교생활 팁":
 
     with st.expander("⏰ 시간 관리하기"):
         st.write(
-            "등교 시간과 쉬는 시간, 수업 시작 시간을 확인하고 "
-            "이동이 필요한 수업은 조금 일찍 준비해 보세요."
+            "수업 시작 시간과 이동 시간을 확인하고 다음 수업을 미리 준비해 보세요."
         )
 
     with st.expander("📢 공지 확인하기"):
@@ -454,27 +473,27 @@ elif page == "📌 학교생활 팁":
         )
 
 
-# -----------------------------
+# =========================
 # 유용한 링크
-# -----------------------------
+# =========================
 elif page == "🔗 유용한 링크":
-    st.title("🔗 유용한 링크")
+    st.title("유용한 링크")
     st.write("학교생활에 도움이 되는 사이트를 모아두었어요.")
 
     link_card(
-        "🏫 천안오성고등학교 공식 홈페이지",
+        "천안오성고등학교 공식 홈페이지",
         "학교 공지사항과 공식 정보를 확인할 수 있어요.",
         "http://ohsung.caehs.kr"
     )
 
     link_card(
-        "🗓️ 시간표 확인 사이트",
+        "시간표 확인 사이트",
         "시간표 관련 정보를 확인할 수 있어요.",
         "https://www.classroutine.net/schools/N10/8140246"
     )
 
     link_card(
-        "🍱 급식 정보 사이트",
+        "급식 정보 사이트",
         "급식 메뉴 관련 정보를 확인할 수 있어요.",
         "https://school.weingchicken.com/schools/8584"
     )
@@ -483,28 +502,41 @@ elif page == "🔗 유용한 링크":
     st.subheader("나만의 링크 추가하기")
 
     with st.form("add_link_form"):
-        new_title = st.text_input("링크 이름", placeholder="예: 학교에서 자주 쓰는 사이트")
-        new_url = st.text_input("사이트 주소", placeholder="https://example.com")
+        new_title = st.text_input(
+            "링크 이름",
+            placeholder="예: 자주 사용하는 학습 사이트"
+        )
+        new_url = st.text_input(
+            "사이트 주소",
+            placeholder="https://example.com"
+        )
         new_description = st.text_input(
             "간단한 설명",
-            placeholder="어떤 사이트인지 적어 주세요."
+            placeholder="사이트에 대한 설명을 적어 주세요."
         )
 
-        submitted = st.form_submit_button("링크 추가하기")
+        submitted = st.form_submit_button(
+            "링크 추가하기",
+            use_container_width=True
+        )
 
         if submitted:
-            if not new_title.strip() or not new_url.strip():
+            title = new_title.strip()
+            url = new_url.strip()
+            description = new_description.strip()
+
+            if not title or not url:
                 st.error("링크 이름과 사이트 주소를 입력해 주세요.")
             elif not (
-                new_url.strip().startswith("https://")
-                or new_url.strip().startswith("http://")
+                url.startswith("https://")
+                or url.startswith("http://")
             ):
-                st.error("사이트 주소는 http:// 또는 https://로 시작해야 해요.")
+                st.error("주소는 http:// 또는 https://로 시작해야 해요.")
             else:
                 st.session_state.custom_links.append({
-                    "title": new_title.strip(),
-                    "url": new_url.strip(),
-                    "description": new_description.strip()
+                    "title": title,
+                    "url": url,
+                    "description": description
                 })
                 st.success("링크를 추가했어요!")
 
@@ -514,22 +546,30 @@ elif page == "🔗 유용한 링크":
         for i, item in enumerate(st.session_state.custom_links):
             with st.container(border=True):
                 st.markdown(f"### {item['title']}")
+
                 if item["description"]:
                     st.write(item["description"])
 
-                st.link_button("사이트 열기 ↗", item["url"])
+                st.link_button(
+                    "사이트 열기 ↗",
+                    item["url"],
+                    use_container_width=True
+                )
 
-                if st.button("이 링크 삭제", key=f"delete_link_{i}"):
+                if st.button(
+                    "이 링크 삭제",
+                    key=f"delete_link_{i}"
+                ):
                     st.session_state.custom_links.pop(i)
                     st.rerun()
 
 
-# -----------------------------
+# =========================
 # 준비물 체크리스트
-# -----------------------------
+# =========================
 elif page == "✅ 준비물 체크리스트":
-    st.title("✅ 준비물 체크리스트")
-    st.write("등교하기 전에 준비물을 확인해 보세요.")
+    st.title("준비물 체크리스트")
+    st.write("등교하기 전에 필요한 준비물을 확인해 보세요.")
 
     items = [
         "교과서와 학습 자료",
@@ -545,11 +585,7 @@ elif page == "✅ 준비물 체크리스트":
     checked_count = 0
 
     for item in items:
-        checked = st.checkbox(
-            item,
-            key=f"check_{item}"
-        )
-        if checked:
+        if st.checkbox(item, key=f"check_{item}"):
             checked_count += 1
 
     total = len(items)
@@ -557,23 +593,22 @@ elif page == "✅ 준비물 체크리스트":
 
     st.divider()
     st.subheader("준비 진행 상황")
-
     st.progress(progress)
     st.write(f"**{checked_count} / {total}개** 준비 완료")
 
     if checked_count == total:
-        st.success("모든 항목을 확인했어요. 내일도 힘내세요! 🎉")
+        st.success("모든 항목을 확인했어요! 🎉")
     else:
-        st.caption("체크하지 않은 항목을 확인하고 차근차근 준비해 보세요.")
+        st.caption("남은 항목을 확인하고 차근차근 준비해 보세요.")
 
 
-# -----------------------------
+# =========================
 # 하단 안내
-# -----------------------------
+# =========================
 st.divider()
 
 st.markdown(
     "<p class='small-note'>천안오성고등학교 학교생활 길잡이 · "
-    "학교의 공식 안내와 최신 공지를 우선으로 확인하세요.</p>",
+    "최신 학교 정보는 공식 홈페이지에서 확인하세요.</p>",
     unsafe_allow_html=True
 )
