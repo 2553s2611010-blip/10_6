@@ -1,5 +1,6 @@
 
 import streamlit as st
+from pathlib import Path
 
 st.set_page_config(
     page_title="천안오성고등학교 | 전학생 안내",
@@ -17,190 +18,179 @@ LIGHT_BLUE = "#EAF1FA"
 TEXT = "#17263D"
 MUTED = "#66758A"
 
-st.markdown(
-    f"""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+def apply_styles():
+    st.markdown(
+        f"""
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
 
-    html, body, [class*="css"] {{
-        font-family: 'Noto Sans KR', sans-serif;
-    }}
+        html, body, [class*="css"] {{
+            font-family: 'Noto Sans KR', sans-serif;
+        }}
 
-    .stApp {{
-        background: #F5F7FB;
-        color: {TEXT};
-    }}
+        .stApp {{
+            background: #F5F7FB;
+            color: {TEXT};
+        }}
 
-    [data-testid="stHeader"] {{
-        background: rgba(245,247,251,0.95);
-    }}
+        [data-testid="stHeader"] {{
+            background: rgba(245,247,251,0.95);
+        }}
 
-    [data-testid="stSidebar"] {{
-        background: {NAVY};
-    }}
+        [data-testid="stSidebar"] {{
+            background: {NAVY};
+        }}
 
-    /* 사이드바 기본 글씨는 밝게 표시 */
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] .stCaption {{
-        color: #F1F5FC !important;
-    }}
+        /* 사이드바 기본 글씨는 밝게 표시 */
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] .stCaption {{
+            color: #F1F5FC !important;
+        }}
 
-    /* 직접 만든 사이드바 버튼: 흰 배경 + 어두운 글씨 */
-    [data-testid="stSidebar"] div.stButton > button {{
-        background: #FFFFFF !important;
-        color: #17263D !important;
-        border: 1px solid #DCE5F0 !important;
-    }}
+        /* 직접 만든 사이드바 버튼: 흰 배경 + 어두운 글씨 */
+        [data-testid="stSidebar"] div.stButton > button {{
+            background: #FFFFFF !important;
+            color: #17263D !important;
+            border: 1px solid #DCE5F0 !important;
+        }}
 
-    [data-testid="stSidebar"] div.stButton > button p,
-    [data-testid="stSidebar"] div.stButton > button span,
-    [data-testid="stSidebar"] div.stButton > button div {{
-        color: #17263D !important;
-    }}
+        [data-testid="stSidebar"] div.stButton > button p,
+        [data-testid="stSidebar"] div.stButton > button span,
+        [data-testid="stSidebar"] div.stButton > button div {{
+            color: #17263D !important;
+        }}
 
-    /* Streamlit pages 폴더 자동 메뉴 */
-    [data-testid="stSidebarNav"] a,
-    [data-testid="stSidebarNav"] a span,
-    [data-testid="stSidebarNav"] a p {{
-        color: #F1F5FC !important;
-    }}
+        /* Streamlit pages 폴더 자동 메뉴 */
+        [data-testid="stSidebarNav"] a,
+        [data-testid="stSidebarNav"] a span,
+        [data-testid="stSidebarNav"] a p {{
+            color: #F1F5FC !important;
+        }}
 
-    [data-testid="stSidebarNav"] {{
-        display: block !important;
-        visibility: visible !important;
-    }}
+        [data-testid="stSidebarNav"] {{
+            display: block !important;
+            visibility: visible !important;
+        }}
 
-    /* 직접 추가한 학교 지도/공지 페이지 링크 */
-    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"],
-    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] p,
-    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] span {{
-        color: #17263D !important;
-    }}
+        .hero {{
+            background: linear-gradient(120deg, #101D35 0%, #203F66 65%, #416C9B 100%);
+            padding: 42px 38px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 24px;
+        }}
 
-    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] {{
-        background: #FFFFFF !important;
-        border: 1px solid #DCE5F0 !important;
-        border-radius: 10px !important;
-        padding: 0.65rem 0.8rem !important;
-        margin: 0.35rem 0 !important;
-    }}
+        .hero-label {{
+            color: #C2D8F5;
+            font-size: 12px;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }}
 
-    .hero {{
-        background: linear-gradient(120deg, #101D35 0%, #203F66 65%, #416C9B 100%);
-        padding: 42px 38px;
-        border-radius: 20px;
-        color: white;
-        margin-bottom: 24px;
-    }}
+        .hero h1 {{
+            color: white;
+            font-size: clamp(28px, 4vw, 43px);
+            line-height: 1.35;
+            margin: 16px 0 10px 0;
+            font-weight: 800;
+        }}
 
-    .hero-label {{
-        color: #C2D8F5;
-        font-size: 12px;
-        letter-spacing: 3px;
-        font-weight: 700;
-    }}
+        .hero p {{
+            color: #E0E9F5;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }}
 
-    .hero h1 {{
-        color: white;
-        font-size: clamp(28px, 4vw, 43px);
-        line-height: 1.35;
-        margin: 16px 0 10px 0;
-        font-weight: 800;
-    }}
+        .section-title {{
+            color: {NAVY};
+            font-size: 23px;
+            font-weight: 800;
+            margin: 28px 0 6px 0;
+        }}
 
-    .hero p {{
-        color: #E0E9F5;
-        font-size: 15px;
-        line-height: 1.8;
-        margin-bottom: 0;
-    }}
+        .section-desc {{
+            color: {MUTED};
+            font-size: 14px;
+            margin-bottom: 18px;
+        }}
 
-    .section-title {{
-        color: {NAVY};
-        font-size: 23px;
-        font-weight: 800;
-        margin: 28px 0 6px 0;
-    }}
+        .info-card {{
+            background: white;
+            border: 1px solid #E3E9F2;
+            border-radius: 15px;
+            padding: 22px;
+            min-height: 150px;
+            margin-bottom: 12px;
+        }}
 
-    .section-desc {{
-        color: {MUTED};
-        font-size: 14px;
-        margin-bottom: 18px;
-    }}
+        .card-number {{
+            font-size: 12px;
+            color: {BLUE};
+            letter-spacing: 1.5px;
+            font-weight: 800;
+        }}
 
-    .info-card {{
-        background: white;
-        border: 1px solid #E3E9F2;
-        border-radius: 15px;
-        padding: 22px;
-        min-height: 150px;
-        margin-bottom: 12px;
-    }}
+        .card-title {{
+            color: {NAVY};
+            font-size: 18px;
+            font-weight: 700;
+            margin: 12px 0 8px 0;
+        }}
 
-    .card-number {{
-        font-size: 12px;
-        color: {BLUE};
-        letter-spacing: 1.5px;
-        font-weight: 800;
-    }}
+        .card-desc {{
+            color: {MUTED};
+            font-size: 13px;
+            line-height: 1.8;
+        }}
 
-    .card-title {{
-        color: {NAVY};
-        font-size: 18px;
-        font-weight: 700;
-        margin: 12px 0 8px 0;
-    }}
+        .notice {{
+            background: {LIGHT_BLUE};
+            border-left: 4px solid {BLUE};
+            padding: 16px 18px;
+            border-radius: 8px;
+            color: {TEXT};
+            line-height: 1.8;
+            margin: 14px 0;
+        }}
 
-    .card-desc {{
-        color: {MUTED};
-        font-size: 13px;
-        line-height: 1.8;
-    }}
+        .footer {{
+            text-align: center;
+            color: #8793A5;
+            font-size: 12px;
+            padding: 30px 0 10px 0;
+        }}
 
-    .notice {{
-        background: {LIGHT_BLUE};
-        border-left: 4px solid {BLUE};
-        padding: 16px 18px;
-        border-radius: 8px;
-        color: {TEXT};
-        line-height: 1.8;
-        margin: 14px 0;
-    }}
+        div.stButton > button {{
+            border-radius: 10px;
+            min-height: 44px;
+            font-weight: 600;
+            border: 1px solid #DCE5F0;
+        }}
 
-    .footer {{
-        text-align: center;
-        color: #8793A5;
-        font-size: 12px;
-        padding: 30px 0 10px 0;
-    }}
+        div.stButton > button[kind="primary"] {{
+            background: {NAVY} !important;
+            border-color: {NAVY} !important;
+            color: #FFFFFF !important;
+        }}
 
-    div.stButton > button {{
-        border-radius: 10px;
-        min-height: 44px;
-        font-weight: 600;
-        border: 1px solid #DCE5F0;
-    }}
+        div.stButton > button[kind="primary"] p,
+        div.stButton > button[kind="primary"] span,
+        div.stButton > button[kind="primary"] div {{
+            color: #FFFFFF !important;
+        }}
 
-    div.stButton > button[kind="primary"] {{
-        background: {NAVY} !important;
-        border-color: {NAVY} !important;
-        color: #FFFFFF !important;
-    }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    div.stButton > button[kind="primary"] p,
-    div.stButton > button[kind="primary"] span,
-    div.stButton > button[kind="primary"] div {{
-        color: #FFFFFF !important;
-    }}
 
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
 
 # -----------------------------
 # 안내 페이지 데이터
@@ -266,41 +256,31 @@ if "page" not in st.session_state:
 # -----------------------------
 # 사이드바
 # -----------------------------
-with st.sidebar:
-    st.markdown("## 🏫 OSEONG")
-    st.caption("CHEONAN OSEONG HIGH SCHOOL")
-    st.markdown("---")
-    st.markdown("### GUIDE MENU")
+def render_sidebar():
+    with st.sidebar:
+        st.markdown("## 🏫 OSEONG")
+        st.caption("CHEONAN OSEONG HIGH SCHOOL")
+        st.markdown("---")
+        st.markdown("### GUIDE MENU")
 
-    if st.button("⌂  메인 페이지", use_container_width=True):
-        st.session_state.page = "홈"
-        st.rerun()
-
-    for name, data in PAGES.items():
-        if st.button(
-            f"{data['icon']}  {name}",
-            key=f"nav_{name}",
-            use_container_width=True,
-        ):
-            st.session_state.page = name
+        if st.button("⌂  메인 페이지", use_container_width=True):
+            st.session_state.page = "홈"
             st.rerun()
 
-    # pages 폴더에 있는 별도 Streamlit 페이지로 이동하는 링크
-    st.markdown("### 학교 서비스")
-    st.page_link(
-        "pages/학교지도 알리미 시스템.py",
-        label="🗺️ 학교지도 알리미 시스템",
-        icon="🗺️",
-    )
-    st.page_link(
-        "pages/학교 공지 알리미 시스템.py",
-        label="📢 학교 공지 알리미 시스템",
-        icon="📢",
-    )
+        for name, data in PAGES.items():
+            if st.button(
+                f"{data['icon']}  {name}",
+                key=f"nav_{name}",
+                use_container_width=True,
+            ):
+                st.session_state.page = name
+                st.rerun()
 
-    st.markdown("---")
-    st.caption("새로운 시작을 응원합니다.")
-    st.caption("Transfer Student Guide")
+        st.markdown("---")
+        st.caption("새로운 시작을 응원합니다.")
+        st.caption("Transfer Student Guide")
+
+
 
 # -----------------------------
 # 메인 페이지
@@ -449,28 +429,84 @@ def render_page(name):
         st.rerun()
 
 # -----------------------------
-# 화면 실행
+# 내부 안내 화면 렌더링
 # -----------------------------
-try:
-    if st.session_state.page == "홈":
-        render_home()
-    elif st.session_state.page in PAGES:
-        render_page(st.session_state.page)
-    else:
-        st.session_state.page = "홈"
-        st.rerun()
+def render_internal():
+    apply_styles()
+    render_sidebar()
 
-except Exception:
-    st.error("화면을 표시하는 중 문제가 발생했습니다.")
-    st.info("페이지를 새로고침하거나 메인 페이지로 돌아가 다시 시도해 주세요.")
+    try:
+        if st.session_state.page == "홈":
+            render_home()
+        elif st.session_state.page in PAGES:
+            render_page(st.session_state.page)
+        else:
+            st.session_state.page = "홈"
+            st.rerun()
+    except Exception as exc:
+        st.error("화면을 표시하는 중 문제가 발생했습니다.")
+        st.caption(f"오류 종류: {type(exc).__name__}")
+        st.info("페이지를 새로고침하거나 메인 페이지로 돌아가 다시 시도해 주세요.")
 
-st.markdown(
-    """
-    <div class="footer">
-        CHEONAN OSEONG HIGH SCHOOL · STUDENT GUIDE<br>
-        본 페이지는 학교생활 안내를 위한 예시 웹앱입니다.
-    </div>
-    """,
-    unsafe_allow_html=True,
+    st.markdown(
+        """
+        <div class="footer">
+            CHEONAN OSEONG HIGH SCHOOL · STUDENT GUIDE<br>
+            본 페이지는 학교생활 안내를 위한 예시 웹앱입니다.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# -----------------------------
+# 실제 pages 파일 자동 탐색
+# 한국어 파일명과 영어 파일명을 모두 지원합니다.
+# -----------------------------
+BASE_DIR = Path(__file__).resolve().parent
+PAGES_DIR = BASE_DIR / "pages"
+
+
+def find_page_file(*filenames):
+    for filename in filenames:
+        candidate = PAGES_DIR / filename
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+map_file = find_page_file(
+    "school_map.py",
+    "학교지도 알리미 시스템.py",
+    "학교 지도 알리미 시스템.py",
+)
+notice_file = find_page_file(
+    "school_notice.py",
+    "학교 공지 알리미 시스템.py",
+    "학교공지알리미시스템.py",
 )
 
+main_page = st.Page(
+    render_internal,
+    title="메인 페이지",
+    icon="🏠",
+    default=True,
+)
+
+school_pages = []
+if map_file is not None:
+    school_pages.append(
+        st.Page(map_file, title="학교지도 알리미 시스템", icon="🗺️")
+    )
+if notice_file is not None:
+    school_pages.append(
+        st.Page(notice_file, title="학교 공지 알리미 시스템", icon="📢")
+    )
+
+nav_groups = {"안내 메뉴": [main_page]}
+if school_pages:
+    nav_groups["학교 알리미"] = school_pages
+
+# st.page_link 대신 st.navigation으로 페이지를 명시적으로 등록합니다.
+selected_page = st.navigation(nav_groups, position="sidebar")
+selected_page.run()
