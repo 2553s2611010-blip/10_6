@@ -2,613 +2,408 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="천안오성고등학교 길잡이",
-    page_icon="🎓",
+    page_title="천안오성고등학교 | 전학생 안내",
+    page_icon="🏫",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
-# =========================
-# 디자인: 쿨톤 블루 & 그레이
-# =========================
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
-
-:root {
-    --bg: #F4F7FB;
-    --surface: #FFFFFF;
-    --blue: #E5EDF8;
-    --blue-strong: #6687B4;
-    --mint: #DDECE8;
-    --text: #293B52;
-    --muted: #718096;
-    --border: #E1E7EF;
-}
-
-.stApp {
-    background: var(--bg);
-    color: var(--text);
-}
-
-html, body, [class*="css"] {
-    font-family: 'Pretendard', sans-serif;
-}
-
-.block-container {
-    max-width: 1120px;
-    padding-top: 2.2rem;
-    padding-bottom: 3rem;
-}
-
-h1, h2, h3 {
-    color: var(--text);
-    letter-spacing: -0.035em;
-}
-
-h1 {
-    font-weight: 800;
-}
-
-h2, h3 {
-    font-weight: 650;
-}
-
-p, label, li {
-    line-height: 1.7;
-}
-
-[data-testid="stSidebar"] {
-    background: #EDF2F8;
-    border-right: 1px solid var(--border);
-}
-
-[data-testid="stSidebar"] h1 {
-    font-size: 1.35rem;
-}
-
-[data-testid="stSidebar"] [data-testid="stRadio"] label {
-    border-radius: 10px;
-}
-
-.hero {
-    background: linear-gradient(
-        120deg,
-        #E5EDF8 0%,
-        #EAF1F7 65%,
-        #DDECE8 100%
-    );
-    border: 1px solid #DEE7F0;
-    border-radius: 22px;
-    padding: 34px;
-    margin-bottom: 28px;
-}
-
-.hero .eyebrow {
-    color: #6687A9;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.13em;
-}
-
-.hero h1 {
-    color: #293F5B;
-    font-size: 2.1rem;
-    margin: 10px 0 12px 0;
-}
-
-.hero p {
-    color: #586D84;
-    font-size: 1rem;
-    line-height: 1.8;
-}
-
-[data-testid="stVerticalBlockBorderWrapper"] {
-    background: var(--surface);
-    border-color: var(--border) !important;
-    border-radius: 17px;
-}
-
-div.stButton > button,
-div.stLinkButton > a {
-    border-radius: 11px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-div.stButton > button {
-    border: 1px solid #D7E1EE;
-    background: #F1F5FA;
-    color: #344D6B;
-}
-
-div.stButton > button:hover {
-    border-color: #9DB4D2;
-    background: #E5EDF8;
-    color: #263D59;
-}
-
-div.stLinkButton > a {
-    border: 1px solid #D7E1EE;
-    background: #FFFFFF;
-    color: #405B7C;
-}
-
-div.stLinkButton > a:hover {
-    background: #EAF1F8;
-    border-color: #A8BCD4;
-}
-
-[data-testid="stExpander"] {
-    background: #FFFFFF;
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    overflow: hidden;
-}
-
-[data-testid="stTextInput"] input {
-    border-radius: 11px;
-    border-color: #D8E1EB;
-    background: #FFFFFF;
-}
-
-[data-testid="stProgressBar"] > div > div {
-    background: #7798B8;
-}
-
-[data-testid="stMetric"] {
-    background: #FFFFFF;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: 15px;
-}
-
-hr {
-    border-color: #E1E7EF;
-}
-
-.small-note {
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
-@media (max-width: 640px) {
-    .block-container {
-        padding: 1.2rem 1rem 2rem;
-    }
-
-    .hero {
-        padding: 23px;
-        border-radius: 17px;
-    }
-
-    .hero h1 {
-        font-size: 1.65rem;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-# =========================
-# 세션 상태 초기화
-# =========================
-if "custom_links" not in st.session_state:
-    st.session_state.custom_links = []
-
-
-# =========================
-# 공통 함수
-# =========================
-def info_card(title, description, icon="📘"):
-    with st.container(border=True):
-        st.markdown(f"### {icon} {title}")
-        st.write(description)
-
-
-def link_card(title, description, url):
-    with st.container(border=True):
-        st.markdown(f"### {title}")
-        st.write(description)
-        st.link_button("바로가기 ↗", url, use_container_width=True)
-
-
-# =========================
-# 사이드바
-# =========================
-with st.sidebar:
-    st.markdown("# 🎓 오성고 길잡이")
-    st.caption("CHEONAN OHSEONG HIGH SCHOOL")
-    st.divider()
-
-    page = st.radio(
-        "메뉴 선택",
-        [
-            "🏠 홈",
-            "📚 학교생활",
-            "🏫 학교 시설",
-            "🤝 친구 사귀기",
-            "📌 학교생활 팁",
-            "🔗 유용한 링크",
-            "✅ 준비물 체크리스트"
-        ],
-        label_visibility="collapsed"
-    )
-
-    st.divider()
-    st.caption("처음 시작하는 학교생활,\n차근차근 알아봐요.")
-
-
-# =========================
-# 홈
-# =========================
-if page == "🏠 홈":
-    st.markdown("""
-    <div class="hero">
-        <div class="eyebrow">CHEONAN OHSEONG HIGH SCHOOL</div>
-        <h1>새로운 학교생활의 시작</h1>
-        <p>
-            천안오성고등학교에 처음 온 학생들을 위한 학교생활 길잡이입니다.<br>
-            필요한 정보와 유용한 사이트를 한곳에서 확인해 보세요.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.subheader("무엇이 궁금한가요?")
-    st.caption("아래에서 필요한 정보를 찾아보세요.")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        info_card(
-            "학교생활",
-            "시간표와 급식 정보, 학교생활 기본 팁을 확인해요.",
-            "📚"
-        )
-        info_card(
-            "친구 사귀기",
-            "새로운 친구에게 자연스럽게 다가가는 방법을 알아봐요.",
-            "🤝"
-        )
-        info_card(
-            "준비물 체크리스트",
-            "등교 전에 준비물을 하나씩 확인해요.",
-            "✅"
-        )
-
-    with col2:
-        info_card(
-            "학교 시설",
-            "교실과 주요 시설을 이용할 때 참고할 내용을 확인해요.",
-            "🏫"
-        )
-        info_card(
-            "학교생활 팁",
-            "수행평가와 과제, 시간 관리를 위한 팁을 알아봐요.",
-            "📌"
-        )
-        info_card(
-            "유용한 링크",
-            "학교 홈페이지와 자주 쓰는 사이트를 모아 봐요.",
-            "🔗"
-        )
-
-    st.divider()
-    st.subheader("학교 기본 정보")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        with st.container(border=True):
-            st.markdown("**학교명**")
-            st.write("천안오성고등학교")
-            st.markdown("**주소**")
-            st.write("충청남도 천안시 서북구 과수원길 27")
-
-    with col2:
-        with st.container(border=True):
-            st.markdown("**공식 홈페이지**")
-            st.write("학교 공지와 공식 정보를 확인하세요.")
-            st.link_button(
-                "학교 홈페이지 방문 ↗",
-                "http://ohsung.caehs.kr",
-                use_container_width=True
-            )
-
-
-# =========================
-# 학교생활
-# =========================
-elif page == "📚 학교생활":
-    st.title("학교생활")
-    st.write("매일 필요한 학교 정보를 빠르게 찾아보세요.")
-
-    st.info(
-        "시간표와 급식 정보는 외부 사이트로 연결됩니다. "
-        "최신 정보는 학교 공지와 함께 확인하세요."
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        link_card(
-            "시간표 확인",
-            "수업 시간표를 확인할 수 있는 사이트입니다.",
-            "https://www.classroutine.net/schools/N10/8140246"
-        )
-
-    with col2:
-        link_card(
-            "급식 정보 확인",
-            "급식 메뉴 관련 정보를 확인할 수 있습니다.",
-            "https://school.weingchicken.com/schools/8584"
-        )
-
-    st.subheader("학교생활 기본 팁")
-
-    info_card(
-        "시간표 미리 확인하기",
-        "다음 날 수업과 과목별 준비물을 전날 확인해요.",
-        "🗓️"
-    )
-
-    info_card(
-        "학교 공지 확인하기",
-        "수행평가, 행사, 제출 기한을 놓치지 않도록 공지를 확인해요.",
-        "📢"
-    )
-
-    info_card(
-        "모르는 내용 질문하기",
-        "담임 선생님이나 교과 선생님에게 질문하면 정확한 정보를 얻을 수 있어요.",
-        "💬"
-    )
-
-
-# =========================
-# 학교 시설
-# =========================
-elif page == "🏫 학교 시설":
-    st.title("학교 시설 안내")
-    st.write("주요 시설을 미리 알아두면 학교생활에 도움이 돼요.")
-
-    info_card(
-        "교실",
-        "교실 번호와 층수를 확인하고 이동 경로를 미리 알아두세요.",
-        "🚪"
-    )
-
-    info_card(
-        "교무실",
-        "선생님께 질문하거나 학교생활에 관한 도움을 받을 수 있는 공간이에요.",
-        "👩‍🏫"
-    )
-
-    info_card(
-        "도서관",
-        "독서와 과제에 필요한 자료를 찾아볼 수 있어요.",
-        "📖"
-    )
-
-    info_card(
-        "보건실",
-        "학교에서 몸이 아프거나 다쳤을 때 선생님에게 알리고 도움을 요청하세요.",
-        "🩺"
-    )
-
-    st.warning(
-        "시설의 실제 위치와 이용 시간은 학교 안내도나 선생님을 통해 확인하세요."
-    )
-
-
-# =========================
-# 친구 사귀기
-# =========================
-elif page == "🤝 친구 사귀기":
-    st.title("친구 사귀기")
-    st.write("작은 인사부터 시작해도 충분해요.")
-
-    info_card(
-        "먼저 인사하기",
-        "등교할 때 가볍게 인사하면 자연스럽게 대화를 시작할 수 있어요.",
-        "👋"
-    )
-
-    info_card(
-        "공통 관심사 찾기",
-        "좋아하는 과목이나 취미, 음악 등 공통된 관심사로 이야기해 보세요.",
-        "🎧"
-    )
-
-    info_card(
-        "함께 질문하기",
-        "교실 위치나 과제 내용을 함께 확인하면서 대화를 나눌 수 있어요.",
-        "💬"
-    )
-
-    info_card(
-        "천천히 친해지기",
-        "처음부터 많은 친구를 사귀려고 부담을 갖지 않아도 괜찮아요.",
-        "🌱"
-    )
-
-    st.success(
-        "친구 관계는 서두르지 않아도 괜찮아요. "
-        "자신에게 편안한 속도로 다가가 보세요."
-    )
-
-
-# =========================
-# 학교생활 팁
-# =========================
-elif page == "📌 학교생활 팁":
-    st.title("학교생활 팁")
-    st.write("알아두면 유용한 학교생활 관리 방법이에요.")
-
-    with st.expander("📅 수행평가 관리하기"):
-        st.write(
-            "수행평가 날짜와 제출 기한을 달력이나 메모 앱에 기록해 두세요. "
-            "과목별로 정리하면 준비할 일을 놓치지 않을 수 있어요."
-        )
-
-    with st.expander("🎒 가방 미리 챙기기"):
-        st.write(
-            "시간표를 확인한 뒤 교과서, 필기구, 과제물을 전날 준비해 두세요."
-        )
-
-    with st.expander("🙋 도움이 필요할 때"):
-        st.write(
-            "학교생활 중 불편하거나 어려운 일이 있다면 "
-            "담임 선생님이나 믿을 수 있는 교직원에게 도움을 요청하세요."
-        )
-
-    with st.expander("⏰ 시간 관리하기"):
-        st.write(
-            "수업 시작 시간과 이동 시간을 확인하고 다음 수업을 미리 준비해 보세요."
-        )
-
-    with st.expander("📢 공지 확인하기"):
-        st.write(
-            "학교 홈페이지와 학교에서 안내하는 공지를 주기적으로 확인하세요."
-        )
-
-
-# =========================
-# 유용한 링크
-# =========================
-elif page == "🔗 유용한 링크":
-    st.title("유용한 링크")
-    st.write("학교생활에 도움이 되는 사이트를 모아두었어요.")
-
-    link_card(
-        "천안오성고등학교 공식 홈페이지",
-        "학교 공지사항과 공식 정보를 확인할 수 있어요.",
-        "http://ohsung.caehs.kr"
-    )
-
-    link_card(
-        "시간표 확인 사이트",
-        "시간표 관련 정보를 확인할 수 있어요.",
-        "https://www.classroutine.net/schools/N10/8140246"
-    )
-
-    link_card(
-        "급식 정보 사이트",
-        "급식 메뉴 관련 정보를 확인할 수 있어요.",
-        "https://school.weingchicken.com/schools/8584"
-    )
-
-    st.divider()
-    st.subheader("나만의 링크 추가하기")
-
-    with st.form("add_link_form"):
-        new_title = st.text_input(
-            "링크 이름",
-            placeholder="예: 자주 사용하는 학습 사이트"
-        )
-        new_url = st.text_input(
-            "사이트 주소",
-            placeholder="https://example.com"
-        )
-        new_description = st.text_input(
-            "간단한 설명",
-            placeholder="사이트에 대한 설명을 적어 주세요."
-        )
-
-        submitted = st.form_submit_button(
-            "링크 추가하기",
-            use_container_width=True
-        )
-
-        if submitted:
-            title = new_title.strip()
-            url = new_url.strip()
-            description = new_description.strip()
-
-            if not title or not url:
-                st.error("링크 이름과 사이트 주소를 입력해 주세요.")
-            elif not (
-                url.startswith("https://")
-                or url.startswith("http://")
-            ):
-                st.error("주소는 http:// 또는 https://로 시작해야 해요.")
-            else:
-                st.session_state.custom_links.append({
-                    "title": title,
-                    "url": url,
-                    "description": description
-                })
-                st.success("링크를 추가했어요!")
-
-    if st.session_state.custom_links:
-        st.subheader("추가한 링크")
-
-        for i, item in enumerate(st.session_state.custom_links):
-            with st.container(border=True):
-                st.markdown(f"### {item['title']}")
-
-                if item["description"]:
-                    st.write(item["description"])
-
-                st.link_button(
-                    "사이트 열기 ↗",
-                    item["url"],
-                    use_container_width=True
-                )
-
-                if st.button(
-                    "이 링크 삭제",
-                    key=f"delete_link_{i}"
-                ):
-                    st.session_state.custom_links.pop(i)
-                    st.rerun()
-
-
-# =========================
-# 준비물 체크리스트
-# =========================
-elif page == "✅ 준비물 체크리스트":
-    st.title("준비물 체크리스트")
-    st.write("등교하기 전에 필요한 준비물을 확인해 보세요.")
-
-    items = [
-        "교과서와 학습 자료",
-        "필통과 필기구",
-        "과제물과 제출 서류",
-        "학생증 (필요한 경우)",
-        "개인 물병",
-        "시간표 확인하기",
-        "학교 공지 확인하기",
-        "다음 날 준비물 확인하기"
-    ]
-
-    checked_count = 0
-
-    for item in items:
-        if st.checkbox(item, key=f"check_{item}"):
-            checked_count += 1
-
-    total = len(items)
-    progress = checked_count / total
-
-    st.divider()
-    st.subheader("준비 진행 상황")
-    st.progress(progress)
-    st.write(f"**{checked_count} / {total}개** 준비 완료")
-
-    if checked_count == total:
-        st.success("모든 항목을 확인했어요! 🎉")
-    else:
-        st.caption("남은 항목을 확인하고 차근차근 준비해 보세요.")
-
-
-# =========================
-# 하단 안내
-# =========================
-st.divider()
+# -----------------------------
+# 색상 및 디자인
+# -----------------------------
+NAVY = "#101D35"
+BLUE = "#416C9B"
+LIGHT_BLUE = "#EAF1FA"
+TEXT = "#17263D"
+MUTED = "#66758A"
 
 st.markdown(
-    "<p class='small-note'>천안오성고등학교 학교생활 길잡이 · "
-    "최신 학교 정보는 공식 홈페이지에서 확인하세요.</p>",
-    unsafe_allow_html=True
+    f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+
+    html, body, [class*="css"] {{
+        font-family: 'Noto Sans KR', sans-serif;
+    }}
+
+    .stApp {{
+        background: #F5F7FB;
+        color: {TEXT};
+    }}
+
+    [data-testid="stHeader"] {{
+        background: rgba(245,247,251,0.95);
+    }}
+
+    [data-testid="stSidebar"] {{
+        background: {NAVY};
+    }}
+
+    [data-testid="stSidebar"] * {{
+        color: #F1F5FC;
+    }}
+
+    .hero {{
+        background: linear-gradient(120deg, #101D35 0%, #203F66 65%, #416C9B 100%);
+        padding: 42px 38px;
+        border-radius: 20px;
+        color: white;
+        margin-bottom: 24px;
+    }}
+
+    .hero-label {{
+        color: #C2D8F5;
+        font-size: 12px;
+        letter-spacing: 3px;
+        font-weight: 700;
+    }}
+
+    .hero h1 {{
+        color: white;
+        font-size: clamp(28px, 4vw, 43px);
+        line-height: 1.35;
+        margin: 16px 0 10px 0;
+        font-weight: 800;
+    }}
+
+    .hero p {{
+        color: #E0E9F5;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 0;
+    }}
+
+    .section-title {{
+        color: {NAVY};
+        font-size: 23px;
+        font-weight: 800;
+        margin: 28px 0 6px 0;
+    }}
+
+    .section-desc {{
+        color: {MUTED};
+        font-size: 14px;
+        margin-bottom: 18px;
+    }}
+
+    .info-card {{
+        background: white;
+        border: 1px solid #E3E9F2;
+        border-radius: 15px;
+        padding: 22px;
+        min-height: 150px;
+        margin-bottom: 12px;
+    }}
+
+    .card-number {{
+        font-size: 12px;
+        color: {BLUE};
+        letter-spacing: 1.5px;
+        font-weight: 800;
+    }}
+
+    .card-title {{
+        color: {NAVY};
+        font-size: 18px;
+        font-weight: 700;
+        margin: 12px 0 8px 0;
+    }}
+
+    .card-desc {{
+        color: {MUTED};
+        font-size: 13px;
+        line-height: 1.8;
+    }}
+
+    .notice {{
+        background: {LIGHT_BLUE};
+        border-left: 4px solid {BLUE};
+        padding: 16px 18px;
+        border-radius: 8px;
+        color: {TEXT};
+        line-height: 1.8;
+        margin: 14px 0;
+    }}
+
+    .footer {{
+        text-align: center;
+        color: #8793A5;
+        font-size: 12px;
+        padding: 30px 0 10px 0;
+    }}
+
+    div.stButton > button {{
+        border-radius: 10px;
+        min-height: 44px;
+        font-weight: 600;
+        border: 1px solid #DCE5F0;
+    }}
+
+    div.stButton > button[kind="primary"] {{
+        background: {NAVY};
+        border-color: {NAVY};
+    }}
+
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# -----------------------------
+# 안내 페이지 데이터
+# -----------------------------
+PAGES = {
+    "학교 소개": {
+        "icon": "🏫",
+        "desc": "학교와 새로운 환경 알아보기",
+        "intro": "새로운 학교생활의 첫걸음",
+        "items": [
+            ("학교 기본 정보", "학교의 공식 홈페이지와 공지사항에서 학교 정보를 확인해 보세요."),
+            ("학교 시설", "교실, 교무실, 보건실, 도서관 등 주요 시설의 위치를 확인해 보세요."),
+            ("학교 규칙", "등교 시간, 복장, 출결 등 학교생활에 필요한 규칙을 확인해 보세요."),
+        ],
+    },
+    "학교생활": {
+        "icon": "🧭",
+        "desc": "교실과 학교 시설 이용하기",
+        "intro": "학교 안에서 길을 잃지 않도록",
+        "items": [
+            ("교실 찾기", "배정받은 학년과 반을 확인하고 교실 위치를 담임 선생님께 문의하세요."),
+            ("주요 시설", "교무실, 보건실, 도서관 등 자주 이용할 시설의 위치를 알아두세요."),
+            ("도움 요청하기", "학교생활이 낯설다면 담임 선생님이나 담당 선생님께 도움을 요청하세요."),
+        ],
+    },
+    "일과 및 학습": {
+        "icon": "📅",
+        "desc": "하루 일과와 학습 준비",
+        "intro": "하루의 흐름을 미리 준비하기",
+        "items": [
+            ("하루 일과", "정확한 등교 시간과 수업 시간은 학교에서 안내하는 최신 시간표를 확인하세요."),
+            ("수업 준비", "과목별 교과서, 필기구, 학습 자료를 미리 준비하세요."),
+            ("과제와 평가", "수행평가 일정과 과제 제출 방법은 교과 담당 선생님께 확인하세요."),
+        ],
+    },
+    "친구 관계와 적응": {
+        "icon": "🤝",
+        "desc": "새로운 친구들과 친해지기",
+        "intro": "천천히 익숙해져도 괜찮아요",
+        "items": [
+            ("먼저 인사하기", "가벼운 인사와 자기소개로 자연스럽게 대화를 시작해 보세요."),
+            ("함께 활동하기", "모둠 활동이나 동아리에서 친구들과 대화할 기회를 만들어 보세요."),
+            ("어려움 이야기하기", "적응이 어렵거나 고민이 있다면 믿을 수 있는 선생님에게 이야기하세요."),
+        ],
+    },
+    "자주 묻는 질문": {
+        "icon": "💬",
+        "desc": "전학생이 궁금해하는 내용",
+        "intro": "궁금한 점을 빠르게 해결하기",
+        "items": [
+            ("반 배정은 어디서 확인하나요?", "담임 선생님 또는 학교에서 안내하는 공식 절차를 통해 확인하세요."),
+            ("시간표는 어디서 확인하나요?", "학교에서 배부하는 시간표나 공식 학사 안내를 확인하세요."),
+            ("준비물을 모르겠어요.", "해당 과목 선생님이나 담임 선생님께 문의하면 정확하게 확인할 수 있어요."),
+            ("학교생활에 적응하기 어려워요.", "담임 선생님, 상담 담당 선생님 등 믿을 수 있는 어른에게 도움을 요청하세요."),
+            ("급식 메뉴는 어디서 확인하나요?", "학교 공식 홈페이지의 급식 안내를 확인하세요."),
+        ],
+    },
+}
+
+if "page" not in st.session_state:
+    st.session_state.page = "홈"
+
+# -----------------------------
+# 사이드바
+# -----------------------------
+with st.sidebar:
+    st.markdown("## 🏫 OSEONG")
+    st.caption("CHEONAN OSEONG HIGH SCHOOL")
+    st.markdown("---")
+    st.markdown("### GUIDE MENU")
+
+    if st.button("⌂  메인 페이지", use_container_width=True):
+        st.session_state.page = "홈"
+        st.rerun()
+
+    for name, data in PAGES.items():
+        if st.button(
+            f"{data['icon']}  {name}",
+            key=f"nav_{name}",
+            use_container_width=True,
+        ):
+            st.session_state.page = name
+            st.rerun()
+
+    st.markdown("---")
+    st.caption("새로운 시작을 응원합니다.")
+    st.caption("Transfer Student Guide")
+
+# -----------------------------
+# 메인 페이지
+# -----------------------------
+def render_home():
+    st.markdown(
+        """
+        <div class="hero">
+            <div class="hero-label">CHEONAN OSEONG HIGH SCHOOL</div>
+            <h1>새로운 학교생활,<br>여기서 시작하세요.</h1>
+            <p>
+                천안오성고등학교에 온 여러분을 환영합니다.<br>
+                학교생활에 필요한 정보를 한곳에서 확인해 보세요.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="section-title">YOUR SCHOOL GUIDE</div>'
+        '<div class="section-desc">필요한 안내를 선택해 보세요.</div>',
+        unsafe_allow_html=True,
+    )
+
+    # 검색
+    keyword = st.text_input(
+        "🔎 안내 검색",
+        placeholder="예: 시간표, 교실, 친구, 급식",
+        key="home_search",
+    )
+
+    if keyword.strip():
+        matches = []
+        for name, data in PAGES.items():
+            searchable = (
+                name + " " + data["desc"] + " " + data["intro"] + " "
+                + " ".join(title + " " + desc for title, desc in data["items"])
+            )
+            if keyword.strip().lower() in searchable.lower():
+                matches.append(name)
+
+        st.markdown("#### 검색 결과")
+        if matches:
+            for name in matches:
+                if st.button(
+                    f"{PAGES[name]['icon']}  {name} — {PAGES[name]['desc']}",
+                    key=f"search_{name}",
+                    use_container_width=True,
+                ):
+                    st.session_state.page = name
+                    st.rerun()
+        else:
+            st.info("검색 결과가 없습니다. 다른 단어로 검색해 보세요.")
+
+    st.markdown("")
+
+    names = list(PAGES.keys())
+    for start in range(0, len(names), 2):
+        cols = st.columns(2)
+        for offset, name in enumerate(names[start:start + 2]):
+            data = PAGES[name]
+            with cols[offset]:
+                st.markdown(
+                    f"""
+                    <div class="info-card">
+                        <div class="card-number">GUIDE / {start + offset + 1:02d}</div>
+                        <div class="card-title">{data['icon']} &nbsp; {name}</div>
+                        <div class="card-desc">{data['desc']}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if st.button(
+                    f"{name} 자세히 보기  →",
+                    key=f"home_{name}",
+                    use_container_width=True,
+                    type="primary",
+                ):
+                    st.session_state.page = name
+                    st.rerun()
+
+    st.markdown(
+        """
+        <div class="notice">
+            <b>처음 학교에 왔다면?</b><br>
+            학교 소개를 먼저 확인한 뒤 학교생활, 일과 및 학습 안내를
+            차례대로 살펴보세요. 정확한 학교 정보는 공식 안내를 기준으로 확인하세요.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# -----------------------------
+# 세부 안내 페이지
+# -----------------------------
+def render_page(name):
+    data = PAGES[name]
+
+    st.markdown(
+        f"""
+        <div class="hero">
+            <div class="hero-label">STUDENT INFORMATION GUIDE</div>
+            <h1>{data['icon']} &nbsp; {name}</h1>
+            <p>{data['intro']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.caption(f"홈 / {name}")
+    st.markdown("")
+
+    for index, (title, desc) in enumerate(data["items"], start=1):
+        with st.container(border=True):
+            st.markdown(f"### {index:02d}  {title}")
+            st.write(desc)
+
+    st.markdown(
+        """
+        <div class="notice">
+            안내 내용은 학교생활을 위한 기본 참고 정보입니다.
+            실제 시간표, 시설 위치, 학사 일정 및 학교 규정은
+            학교의 공식 공지나 담당 선생님을 통해 확인하세요.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("### 다른 안내 페이지")
+    others = [page for page in PAGES if page != name]
+    cols = st.columns(2)
+
+    for index, other in enumerate(others):
+        with cols[index % 2]:
+            if st.button(
+                f"{PAGES[other]['icon']}  {other}  →",
+                key=f"other_{name}_{other}",
+                use_container_width=True,
+            ):
+                st.session_state.page = other
+                st.rerun()
+
+    if st.button("← 메인 페이지로 돌아가기", type="primary"):
+        st.session_state.page = "홈"
+        st.rerun()
+
+# -----------------------------
+# 화면 실행
+# -----------------------------
+try:
+    if st.session_state.page == "홈":
+        render_home()
+    elif st.session_state.page in PAGES:
+        render_page(st.session_state.page)
+    else:
+        st.session_state.page = "홈"
+        st.rerun()
+
+except Exception:
+    st.error("화면을 표시하는 중 문제가 발생했습니다.")
+    st.info("페이지를 새로고침하거나 메인 페이지로 돌아가 다시 시도해 주세요.")
+
+st.markdown(
+    """
+    <div class="footer">
+        CHEONAN OSEONG HIGH SCHOOL · STUDENT GUIDE<br>
+        본 페이지는 학교생활 안내를 위한 예시 웹앱입니다.
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
