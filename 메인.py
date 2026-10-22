@@ -39,8 +39,39 @@ st.markdown(
         background: {NAVY};
     }}
 
-    [data-testid="stSidebar"] * {{
-        color: #F1F5FC;
+    /* 사이드바 기본 글씨는 밝게 표시 */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] .stCaption {{
+        color: #F1F5FC !important;
+    }}
+
+    /* 직접 만든 사이드바 버튼: 흰 배경 + 어두운 글씨 */
+    [data-testid="stSidebar"] div.stButton > button {{
+        background: #FFFFFF !important;
+        color: #17263D !important;
+        border: 1px solid #DCE5F0 !important;
+    }}
+
+    [data-testid="stSidebar"] div.stButton > button p,
+    [data-testid="stSidebar"] div.stButton > button span,
+    [data-testid="stSidebar"] div.stButton > button div {{
+        color: #17263D !important;
+    }}
+
+    /* Streamlit pages 폴더 자동 메뉴 */
+    [data-testid="stSidebarNav"] a,
+    [data-testid="stSidebarNav"] a span,
+    [data-testid="stSidebarNav"] a p {{
+        color: #F1F5FC !important;
+    }}
+
+    [data-testid="stSidebarNav"] {{
+        display: block !important;
+        visibility: visible !important;
     }}
 
     .hero {{
@@ -140,8 +171,15 @@ st.markdown(
     }}
 
     div.stButton > button[kind="primary"] {{
-        background: {NAVY};
-        border-color: {NAVY};
+        background: {NAVY} !important;
+        border-color: {NAVY} !important;
+        color: #FFFFFF !important;
+    }}
+
+    div.stButton > button[kind="primary"] p,
+    div.stButton > button[kind="primary"] span,
+    div.stButton > button[kind="primary"] div {{
+        color: #FFFFFF !important;
     }}
 
     </style>
