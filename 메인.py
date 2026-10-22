@@ -74,6 +74,21 @@ st.markdown(
         visibility: visible !important;
     }}
 
+    /* 직접 추가한 학교 지도/공지 페이지 링크 */
+    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"],
+    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] p,
+    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] span {{
+        color: #17263D !important;
+    }}
+
+    [data-testid="stSidebar"] a[data-testid="stPageLink-Anchor"] {{
+        background: #FFFFFF !important;
+        border: 1px solid #DCE5F0 !important;
+        border-radius: 10px !important;
+        padding: 0.65rem 0.8rem !important;
+        margin: 0.35rem 0 !important;
+    }}
+
     .hero {{
         background: linear-gradient(120deg, #101D35 0%, #203F66 65%, #416C9B 100%);
         padding: 42px 38px;
@@ -269,6 +284,19 @@ with st.sidebar:
         ):
             st.session_state.page = name
             st.rerun()
+
+    # pages 폴더에 있는 별도 Streamlit 페이지로 이동하는 링크
+    st.markdown("### 학교 서비스")
+    st.page_link(
+        "pages/학교지도 알리미 시스템.py",
+        label="🗺️ 학교지도 알리미 시스템",
+        icon="🗺️",
+    )
+    st.page_link(
+        "pages/학교 공지 알리미 시스템.py",
+        label="📢 학교 공지 알리미 시스템",
+        icon="📢",
+    )
 
     st.markdown("---")
     st.caption("새로운 시작을 응원합니다.")
